@@ -49,6 +49,9 @@ static String:g_sConfigFile[PLATFORM_MAX_PATH];
 static bool:g_bCreateFile = false;
 static Handle:g_hPluginHandle = INVALID_HANDLE;
 
+// Seperating filename and folder for Execute stock
+static String:g_sFileName[PLATFORM_MAX_PATH];
+static String:g_sFolder[PLATFORM_MAX_PATH];
 
 
 // Workaround for now
@@ -140,7 +143,9 @@ stock Handle:AutoExecConfig_GetPlugin()
 */
 stock bool:AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
 {
-	Format(g_sConfigFile, sizeof(g_sConfigFile), "%s", file);
+	strcopy(g_sConfigFile, sizeof(g_sConfigFile), file);
+	strcopy(g_sFileName, sizeof(g_sFileName), file);
+	strcopy(g_sFolder, sizeof(g_sFolder), folder);
 	
 	
 	// Format the filename
@@ -286,6 +291,17 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[
 
 
 
+/**
+ * Execute the config file.
+ * Let SourceMod create it, if we didn't create it already.
+ *
+ * @noreturn
+ */
+stock AutoExecConfig_ExecuteFile()
+{
+	// Only let sourcemod create the file, if we didn't do that already.
+	AutoExecConfig(!g_bCreateFile, g_sFileName, g_sFolder);
+}
 
 
 
